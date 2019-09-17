@@ -1,0 +1,15 @@
+{
+  "name": "svgheatmap",
+  "version": "0.0.1",
+  "description": "Produces an SVG heat map when provided with a data grid.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "SVG",
+    "heatmap"
+  ],
+  "author": "Jody Clements",
+  "license": "MIT"
+}
