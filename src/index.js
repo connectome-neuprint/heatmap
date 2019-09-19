@@ -22,13 +22,63 @@ export default class SVGHeatMap {
     return this;
   }
 
+  determineYMarginWidth(target) {
+    let maxWidth = 0;
+    const rows = this.yLabels;
+    const tempYScale = d3
+      .scaleBand()
+      .range([0, 0])
+      .domain(rows)
+      .padding(0.01);
+
+    d3.select(target)
+      .append("g")
+      .call(d3.axisLeft(tempYScale))
+      .selectAll("text")
+      .each(function() {
+        maxWidth = Math.max(this.getBoundingClientRect().width, maxWidth);
+      })
+      .remove();
+
+    return Math.ceil(maxWidth);
+  }
+
+  determineXMarginHeight(target) {
+    let maxWidth = 0;
+    const columns = this.xLabels
+    const tempXScale = d3
+      .scaleBand()
+      .range([0, 0])
+      .domain(columns)
+      .padding(0.01);
+
+    d3.select(target)
+      .append("g")
+      .call(d3.axisBottom(tempXScale))
+      .selectAll("text")
+      .attr("y", 9)
+      .attr("x", 9)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(45)")
+      .style("text-anchor", "start")
+      .each(function() {
+        maxWidth = Math.max(this.getBoundingClientRect().width, maxWidth);
+      })
+      .remove();
+
+    return Math.ceil(maxWidth);
+
+  }
+
   render(target) {
     console.table(this.data);
+    const leftMarginWidth = this.determineYMarginWidth(target);
+    const bottomMarginHeight = this.determineXMarginHeight(target);
     console.log(
       `rendering heatmap to ${target} -> with color ${this.maxColor}`
     );
 
-    const margin = { top: 30, right: 30, bottom: 30, left: 30 };
+    const margin = { top: 30, right: 30, bottom: bottomMarginHeight, left: leftMarginWidth };
     const width = 450 - margin.left - margin.right;
     const height = 450 - margin.top - margin.bottom;
 
