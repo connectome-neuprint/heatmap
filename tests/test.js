@@ -4,9 +4,14 @@ const heatmap = new SVGHeatMap();
 
 // set up some example data
 const testData = [
-  ['foo',12,34,23,56],
-  ['bar',56,23,12,67],
-  ['baz',1,4,67,3,],
+  {column: 'Alpha', row: 'Enum', value: 34},
+  {column: 'Beta', row: 'Help', value: 10},
+  {column: 'Dish', row: 'Fit', value: 50},
+  {column: 'Dish', row: 'Gup', value: 18},
+  {column: 'Alpha', row: 'Help', value: 45},
+  {column: 'Beta', row: 'Gup', value: 21},
+  {column: 'Cish', row: 'Enum', value: 2},
+  {column: 'Dish', row: 'Enum', value: 38},
 ];
 // grab the target div
 const target = document.getElementById('heatmap');

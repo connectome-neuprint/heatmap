@@ -5,7 +5,7 @@ module.exports = {
   mode: "development",
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: './tests'
+    contentBase: path.join(__dirname, 'tests'),
   },
   watch: true,
   output: {
