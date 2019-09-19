@@ -12,6 +12,16 @@ export default class SVGHeatMap {
     return this;
   }
 
+  setXLabels(labels) {
+    this.xLabels = labels;
+    return this;
+  }
+
+  setYLabels(labels) {
+    this.yLabels = labels;
+    return this;
+  }
+
   render(target) {
     console.table(this.data);
     console.log(
@@ -27,8 +37,19 @@ export default class SVGHeatMap {
       .range(["white", DEFAULT_MAX_COLOR])
       .domain([1, 100]);
 
-    const columns = ["Alpha", "Beta", "Cish", "Dish"];
-    const rows = ["Enum", "Fit", "Gup", "Help"];
+    const columns = this.xLabels;
+    const rows = this.yLabels;
+    const x = d3
+      .scaleBand()
+      .range([0, width])
+      .domain(columns)
+      .align(0)
+      .padding(0.01);
+    const y = d3
+      .scaleBand()
+      .range([height, 0])
+      .domain(rows)
+      .padding(0.01);
 
     const svg = d3
       .select(target)
