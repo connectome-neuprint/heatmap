@@ -109,32 +109,28 @@ export default class SVGHeatMap {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const x = d3
-      .scaleBand()
-      .range([0, width])
-      .domain(columns)
-      .padding(0.01);
+    // add the x axis to the heatmap
     svg
       .append("g")
-      .attr("transform", `translate(0,${height})`)
+      .attr("transform", `translate(-1.5,${height})`)
       .call(d3.axisBottom(x))
       .selectAll("text")
-        .attr("y", 9)
-        .attr("x", 9)
-        .attr("dy", ".35em")
-        .attr("transform", "rotate(45)")
-        .style("text-anchor", "start");
+      .attr("y", 9)
+      .attr("x", 9)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(45)")
+      .style("text-anchor", "start");
 
-    const y = d3
-      .scaleBand()
-      .range([height, 0])
-      .domain(rows)
-      .padding(0.01);
-    svg.append("g").call(d3.axisLeft(y));
+    // add the y axis to the heatmap
+    svg
+      .append("g")
+      .attr("transform", `translate(-1.5, 0)`)
+      .call(d3.axisLeft(y));
 
+    // add the data blocks to the heatmap.
     svg
       .selectAll()
-      .data(this.data, (d) => {
+      .data(this.data, d => {
         console.log(d);
         return `${d.column}:${d.row}`;
       })
