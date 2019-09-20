@@ -136,25 +136,22 @@ export default class SVGHeatMap {
       .call(d3.axisLeft(yAxis));
 
     // add the data blocks to the heatmap.
-    svg
-      .selectAll()
+    const blocks = svg.selectAll()
       .data(this.data, d => {
         return `${d.column}:${d.row}`;
       })
       .enter()
-      .append("rect")
-      .attr("x", function(d) {
-        return xAxis(d.column);
-      })
-      .attr("y", function(d) {
-        return yAxis(d.row);
-      })
+      .append("g")
+      .attr("transform", function(d) { return `translate(${xAxis(d.column)},${yAxis(d.row)})`; });
+
+
+    blocks.append("rect")
       .attr("width", xAxis.bandwidth())
       .attr("height", yAxis.bandwidth())
       .style("fill", function(d) {
         return colorScale(d.value);
       })
-      .on("mouseover", function handleMouseOver() {
+     .on("mouseover", function handleMouseOver() {
         d3.select(this).style("cursor", "pointer")
           .style("fill", "orange");
         // draw pop up with the cell information in it.
@@ -171,5 +168,12 @@ export default class SVGHeatMap {
           onClick(event, this, d3.mouse(this));
         }
       });
+
+    blocks.append("text")
+      .attr("x", 20)
+      .attr("y", 20)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.label; });
+
   }
 }
