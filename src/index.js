@@ -10,6 +10,8 @@ export default class SVGHeatMap {
     this.height = props.height || DEFAULT_HEIGHT;
     this.width = props.width || DEFAULT_WIDTH;
     this.onClick = props.onClick;
+    this.onMouseOver = props.onMouseOver;
+    this.onMouseOut = props.onMouseOut;
   }
 
   setData(dataArray) {
@@ -81,7 +83,7 @@ export default class SVGHeatMap {
   }
 
   render(target) {
-    const { onClick, data } = this;
+    const { onClick, onMouseOver, onMouseOut, data } = this;
     console.table(data);
     const leftMarginWidth = this.determineYMarginWidth(target);
     const bottomMarginHeight = this.determineXMarginHeight(target);
@@ -159,16 +161,22 @@ export default class SVGHeatMap {
       .style("fill", function(d) {
         return colorScale(d.value);
       })
-     .on("mouseover", function handleMouseOver() {
+     .on("mouseover", function handleMouseOver(event) {
         d3.select(this).style("cursor", "pointer")
           .style("fill", "orange");
         // draw pop up with the cell information in it.
+        if (onMouseOver) {
+          onMouseOver(event);
+        }
       })
-      .on("mouseout", function handleMouseOver() {
+      .on("mouseout", function handleMouseOver(event) {
         const originalColor = colorScale(d3.select(this).data()[0].value);
         d3.select(this).style("cursor", "default")
           .style("fill",originalColor);
         // remove pop up with the cell information in it.
+        if (onMouseOut) {
+          onMouseOver(event);
+        }
       })
       .on("click", function handleClick(event) {
         // execute the onclick handler passed in on object creation?
