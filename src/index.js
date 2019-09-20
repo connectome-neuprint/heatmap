@@ -62,9 +62,9 @@ export default class SVGHeatMap {
       .call(d3.axisBottom(tempXScale))
       .selectAll("text")
       .attr("y", 9)
-      .attr("x", 9)
+      .attr("x", -9)
       .attr("dy", ".35em")
-      .attr("transform", "rotate(45)")
+      .attr("transform", "rotate(-45)")
       .style("text-anchor", "start")
       .each(function() {
         maxWidth = Math.max(this.getBoundingClientRect().width, maxWidth);
@@ -85,7 +85,7 @@ export default class SVGHeatMap {
     );
 
 
-    const margin = { top: 30, right: 30, bottom: bottomMarginHeight, left: leftMarginWidth };
+    const margin = { top: bottomMarginHeight, right: 30, bottom: 30, left: leftMarginWidth };
     const width = this.width - margin.left - margin.right;
     const height = this.height - margin.top - margin.bottom;
 
@@ -112,21 +112,24 @@ export default class SVGHeatMap {
     const svg = d3
       .select(target)
       .append("svg")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
+      .attr("id", "margin-offset")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // add the x axis to the heatmap
     svg
       .append("g")
-      .attr("transform", `translate(-1.5,${height})`)
-      .call(d3.axisBottom(xAxis))
+      .attr("transform", `translate(-1.5,0)`)
+      .call(d3.axisTop(xAxis))
       .selectAll("text")
-      .attr("y", 9)
+      .attr("y", -9)
       .attr("x", 9)
       .attr("dy", ".35em")
-      .attr("transform", "rotate(45)")
+      .attr("transform", "rotate(-45)")
       .style("text-anchor", "start");
 
     // add the y axis to the heatmap
@@ -169,11 +172,23 @@ export default class SVGHeatMap {
         }
       });
 
+    // add the text labels
     blocks.append("text")
-      .attr("x", 20)
-      .attr("y", 20)
+      .attr("x", xAxis.bandwidth() / 2)
+      .attr("y", yAxis.bandwidth() / 2)
+      .style("text-anchor", "middle")
       .attr("dy", ".35em")
       .text(function(d) { return d.label; });
+
+    // add the secondary text labels
+    blocks.append("text")
+      .attr("x", xAxis.bandwidth() / 2)
+      .attr("y", yAxis.bandwidth() / 2)
+      .style("text-anchor", "middle")
+      .attr("dy", ".35em")
+      .text(function(d) { return d.label2; });
+
+
 
   }
 }
