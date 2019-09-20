@@ -38,11 +38,13 @@ export default class SVGHeatMap {
 
     d3.select(target)
       .append("g")
+      .attr("id", "yHeightCheck")
       .call(d3.axisLeft(tempYScale))
       .selectAll("text")
       .each(function() {
         maxWidth = Math.max(this.getBoundingClientRect().width, maxWidth);
       })
+    d3.select("#yHeightCheck")
       .remove();
 
     return Math.ceil(maxWidth);
@@ -59,6 +61,7 @@ export default class SVGHeatMap {
 
     d3.select(target)
       .append("g")
+      .attr("id", "xHeightCheck")
       .call(d3.axisBottom(tempXScale))
       .selectAll("text")
       .attr("y", 9)
@@ -69,6 +72,8 @@ export default class SVGHeatMap {
       .each(function() {
         maxWidth = Math.max(this.getBoundingClientRect().width, maxWidth);
       })
+
+    d3.select("#xHeightCheck")
       .remove();
 
     return Math.ceil(maxWidth);
