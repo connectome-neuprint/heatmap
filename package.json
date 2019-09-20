@@ -1,5 +1,5 @@
 {
-  "name": "svgheatmap",
+  "name": "@connectome-neuprint/heatmap",
   "version": "0.0.1",
   "description": "Produces an SVG heat map when provided with a data grid.",
   "main": "lib/index.js",
