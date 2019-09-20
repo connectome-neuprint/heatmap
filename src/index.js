@@ -182,6 +182,7 @@ export default class SVGHeatMap {
       .attr("x", xAxis.bandwidth() / 2)
       .attr("y", yAxis.bandwidth() / 2)
       .style("text-anchor", "middle")
+      .attr("pointer-events", "none")
       .attr("dy", ".35em")
       .text(function(d) { return d.label; });
 
@@ -190,6 +191,7 @@ export default class SVGHeatMap {
       .attr("x", xAxis.bandwidth() / 2)
       .attr("y", yAxis.bandwidth() / 2)
       .style("text-anchor", "middle")
+      .attr("pointer-events", "none")
       .attr("dy", ".35em")
       .text(function(d) { return d.label2; });
 
