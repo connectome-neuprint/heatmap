@@ -1,10 +1,15 @@
 import * as d3 from "d3";
 
 const DEFAULT_MAX_COLOR = "#ff0000";
+const DEFAULT_HEIGHT = 450;
+const DEFAULT_WIDTH = 450;
 
 export default class SVGHeatMap {
   constructor(props = {}) {
     this.maxColor = props.maxColor || DEFAULT_MAX_COLOR;
+    this.height = props.height || DEFAULT_HEIGHT;
+    this.width = props.width || DEFAULT_WIDTH;
+    this.onClick = props.onClick;
   }
 
   setData(dataArray) {
@@ -71,31 +76,34 @@ export default class SVGHeatMap {
   }
 
   render(target) {
-    console.table(this.data);
+    const { onClick, data } = this;
+    console.table(data);
     const leftMarginWidth = this.determineYMarginWidth(target);
     const bottomMarginHeight = this.determineXMarginHeight(target);
     console.log(
       `rendering heatmap to ${target} -> with color ${this.maxColor}`
     );
 
+
     const margin = { top: 30, right: 30, bottom: bottomMarginHeight, left: leftMarginWidth };
-    const width = 450 - margin.left - margin.right;
-    const height = 450 - margin.top - margin.bottom;
+    const width = this.width - margin.left - margin.right;
+    const height = this.height - margin.top - margin.bottom;
 
     const colorScale = d3
       .scaleLog()
       .range(["white", DEFAULT_MAX_COLOR])
-      .domain([1, 100]);
+      .domain([1, 50]);
 
     const columns = this.xLabels;
     const rows = this.yLabels;
-    const x = d3
+    const xAxis = d3
       .scaleBand()
       .range([0, width])
       .domain(columns)
       .align(0)
       .padding(0.01);
-    const y = d3
+
+    const yAxis = d3
       .scaleBand()
       .range([height, 0])
       .domain(rows)
@@ -113,7 +121,7 @@ export default class SVGHeatMap {
     svg
       .append("g")
       .attr("transform", `translate(-1.5,${height})`)
-      .call(d3.axisBottom(x))
+      .call(d3.axisBottom(xAxis))
       .selectAll("text")
       .attr("y", 9)
       .attr("x", 9)
@@ -125,35 +133,43 @@ export default class SVGHeatMap {
     svg
       .append("g")
       .attr("transform", `translate(-1.5, 0)`)
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(yAxis));
 
     // add the data blocks to the heatmap.
     svg
       .selectAll()
       .data(this.data, d => {
-        console.log(d);
         return `${d.column}:${d.row}`;
       })
       .enter()
       .append("rect")
       .attr("x", function(d) {
-        return x(d.column);
+        return xAxis(d.column);
       })
       .attr("y", function(d) {
-        return y(d.row);
+        return yAxis(d.row);
       })
-      .attr("width", x.bandwidth())
-      .attr("height", y.bandwidth())
+      .attr("width", xAxis.bandwidth())
+      .attr("height", yAxis.bandwidth())
       .style("fill", function(d) {
         return colorScale(d.value);
       })
-      .on("mouseover", function handleMouseOver(event) {
+      .on("mouseover", function handleMouseOver() {
+        d3.select(this).style("cursor", "pointer")
+          .style("fill", "orange");
         // draw pop up with the cell information in it.
-        console.log(event);
+      })
+      .on("mouseout", function handleMouseOver() {
+        const originalColor = colorScale(d3.select(this).data()[0].value);
+        d3.select(this).style("cursor", "default")
+          .style("fill",originalColor);
+        // remove pop up with the cell information in it.
       })
       .on("click", function handleClick(event) {
         // execute the onclick handler passed in on object creation?
-        console.log(event, this, d3.mouse(this));
+        if (onClick) {
+          onClick(event, this, d3.mouse(this));
+        }
       });
   }
 }
