@@ -199,7 +199,7 @@ export default class SVGHeatMap {
       .style("text-anchor", "middle")
       .attr("pointer-events", "none")
       .attr("dy", ".35em")
-      .text(function(d) { return d.label; });
+      .text(function(d) { return d.label || d.value; });
 
     // add the secondary text labels
     blocks.append("text")
