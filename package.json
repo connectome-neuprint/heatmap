@@ -1,12 +1,13 @@
 {
-  "name": "@connectome-neuprint/heatmap",
+  "name": "@neuprint/heatmap",
   "version": "0.0.1",
   "description": "Produces an SVG heat map when provided with a data grid.",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d lib",
-    "dev": "webpack-dev-server --open"
+    "dev": "webpack-dev-server --open",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "SVG",
