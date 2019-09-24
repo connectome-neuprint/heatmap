@@ -12,7 +12,7 @@ const heatmap = new SVGHeatMap({
 const testData = [
   {column: 'AlphaXX', row: 'AlphaXX', value: 34},
   {column: 'Beta', row: 'Beta', value: 10, label: ' ', label2: '2'},
-  {column: 'Dish', row: 'Dish', value: 50, label2: '0'},
+  {column: 'Dish', row: 'Dish', value: 5000, label2: '0'},
   {column: 'Dish', row: 'Cish', value: 18, label2: '5'},
   {column: 'AlphaXX', row: 'Beta', value: 45, label2: '0'},
   {column: 'Beta', row: 'Cish', value: 21, label2: '3'},
@@ -20,9 +20,9 @@ const testData = [
   {column: 'Dish', row: 'AlphaXX', value: 38, label: 'alternative', label2: '1'},
 ];
 
-const xLables = ["AlphaXX", "Beta", "Cish", "Dish", "Beta1"];
-const yLables = ["AlphaXX", "Beta", "Cish", "Dish", "Beta1"].reverse();
+const xLabels = ["AlphaXX", "Beta", "Cish", "Dish", "Beta1"];
+const yLabels = ["AlphaXX", "Beta", "Cish", "Dish", "Beta1"].reverse();
 // grab the target div
 const target = document.getElementById('heatmap');
 // render the heatmap into the target.
-heatmap.setYLabels(yLables).setXLabels(xLables).setData(testData).render(target);
+heatmap.setYLabels(yLabels).setXLabels(xLabels).setData(testData).render(target);
