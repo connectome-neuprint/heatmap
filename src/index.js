@@ -96,10 +96,12 @@ export default class SVGHeatMap {
     const width = this.width - margin.left - margin.right;
     const height = this.height - margin.top - margin.bottom;
 
+    const maxValue = this.data.reduce((acc, currentValue) => Math.max(acc, currentValue.value), 0)
+
     const colorScale = d3
       .scaleLog()
       .range(["white", DEFAULT_MAX_COLOR])
-      .domain([1, 50]);
+      .domain([1, maxValue]);
 
     const columns = this.xLabels;
     const rows = this.yLabels;
