@@ -9,6 +9,10 @@
     "dev": "webpack-dev-server --open",
     "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/connectome-neuprint/heatmap.git"
+  },
   "keywords": [
     "SVG",
     "heatmap"
