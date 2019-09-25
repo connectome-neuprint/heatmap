@@ -4,7 +4,7 @@ const DEFAULT_MAX_COLOR = "#ff0000";
 const DEFAULT_HEIGHT = 450;
 const DEFAULT_WIDTH = 450;
 
-export default class SVGHeatMap {
+export default class HeatMap {
   constructor(props = {}) {
     this.maxColor = props.maxColor || DEFAULT_MAX_COLOR;
     this.height = props.height || DEFAULT_HEIGHT;
@@ -39,8 +39,9 @@ export default class SVGHeatMap {
       .padding(0.01);
 
     d3.select(target)
-      .append("g")
+      .append('svg')
       .attr("id", "yHeightCheck")
+      .append("g")
       .call(d3.axisLeft(tempYScale))
       .selectAll("text")
       .each(function() {
@@ -49,7 +50,7 @@ export default class SVGHeatMap {
     d3.select("#yHeightCheck")
       .remove();
 
-    return Math.ceil(maxWidth);
+    return Math.ceil(maxWidth) + 10;
   }
 
   determineXMarginHeight(target) {
@@ -62,8 +63,9 @@ export default class SVGHeatMap {
       .padding(0.01);
 
     d3.select(target)
-      .append("g")
+      .append('svg')
       .attr("id", "xHeightCheck")
+      .append("g")
       .call(d3.axisBottom(tempXScale))
       .selectAll("text")
       .attr("y", 9)
@@ -72,29 +74,32 @@ export default class SVGHeatMap {
       .attr("transform", "rotate(-45)")
       .style("text-anchor", "start")
       .each(function() {
-        maxWidth = Math.max(this.getBoundingClientRect().width, maxWidth);
+        maxWidth = Math.max(this.getBoundingClientRect().height, maxWidth);
       })
 
     d3.select("#xHeightCheck")
       .remove();
 
-    return Math.ceil(maxWidth);
+    return Math.ceil(maxWidth) + 10;
 
   }
 
   render(target) {
-    const { onClick, onMouseOver, onMouseOut, data } = this;
-    console.table(data);
+    const { onClick, onMouseOver, onMouseOut } = this;
+    // remove any previously rendered items
+    const existingSVGs = target.getElementsByTagName('svg');
+    Array.from(existingSVGs).forEach(svg => {
+      target.removeChild(svg);
+    });
+
     const leftMarginWidth = this.determineYMarginWidth(target);
     const bottomMarginHeight = this.determineXMarginHeight(target);
-    console.log(
-      `rendering heatmap to ${target} -> with color ${this.maxColor}`
-    );
-
 
     const margin = { top: bottomMarginHeight, right: 30, bottom: 30, left: leftMarginWidth };
     const width = this.width - margin.left - margin.right;
     const height = this.height - margin.top - margin.bottom;
+
+    console.log(width, height);
 
     const maxValue = this.data.reduce((acc, currentValue) => Math.max(acc, currentValue.value), 0)
 
@@ -192,25 +197,25 @@ export default class SVGHeatMap {
     // TODO: combine the two text labels in a "g" element, so that they can be
     // easily centered in the rect.
 
-    // TODO: don't show the label if the blocks are too small.
+    if ( (width / this.xLabels.length) > 40) {
+      // add the text labels
+      blocks.append("text")
+        .attr("x", xAxis.bandwidth() / 2)
+        .attr("y", (yAxis.bandwidth() / 2) - 10)
+        .style("text-anchor", "middle")
+        .attr("pointer-events", "none")
+        .attr("dy", ".35em")
+        .text(function(d) { return d.label || d.value; });
 
-    // add the text labels
-    blocks.append("text")
-      .attr("x", xAxis.bandwidth() / 2)
-      .attr("y", (yAxis.bandwidth() / 2) - 10)
-      .style("text-anchor", "middle")
-      .attr("pointer-events", "none")
-      .attr("dy", ".35em")
-      .text(function(d) { return d.label || d.value; });
-
-    // add the secondary text labels
-    blocks.append("text")
-      .attr("x", xAxis.bandwidth() / 2)
-      .attr("y", (yAxis.bandwidth() / 2) + 10)
-      .style("text-anchor", "middle")
-      .attr("pointer-events", "none")
-      .attr("dy", ".35em")
-      .text(function(d) { return d.label2; });
+      // add the secondary text labels
+      blocks.append("text")
+        .attr("x", xAxis.bandwidth() / 2)
+        .attr("y", (yAxis.bandwidth() / 2) + 10)
+        .style("text-anchor", "middle")
+        .attr("pointer-events", "none")
+        .attr("dy", ".35em")
+        .text(function(d) { return d.label2; });
+    }
 
 
 
