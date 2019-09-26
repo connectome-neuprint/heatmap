@@ -195,7 +195,7 @@ export default class HeatMap {
     // TODO: combine the two text labels in a "g" element, so that they can be
     // easily centered in the rect.
 
-    if ( (width / this.xLabels.length) > 40) {
+    if ( (width / this.xLabels.length) > 80) {
       // add the text labels
       blocks.append("text")
         .attr("x", xAxis.bandwidth() / 2)
