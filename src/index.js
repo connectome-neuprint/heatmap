@@ -99,8 +99,6 @@ export default class HeatMap {
     const width = this.width - margin.left - margin.right;
     const height = this.height - margin.top - margin.bottom;
 
-    console.log(width, height);
-
     const maxValue = this.data.reduce((acc, currentValue) => Math.max(acc, currentValue.value), 0)
 
     const colorScale = d3
@@ -175,7 +173,7 @@ export default class HeatMap {
           .style("fill", "orange");
         // draw pop up with the cell information in it.
         if (onMouseOver) {
-          onMouseOver(event);
+          onMouseOver(event, this);
         }
       })
       .on("mouseout", function handleMouseOver(event) {
@@ -184,7 +182,7 @@ export default class HeatMap {
           .style("fill",originalColor);
         // remove pop up with the cell information in it.
         if (onMouseOut) {
-          onMouseOver(event);
+          onMouseOut(event, this);
         }
       })
       .on("click", function handleClick(event) {
