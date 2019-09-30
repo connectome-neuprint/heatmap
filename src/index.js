@@ -163,8 +163,6 @@ export default class HeatMap {
     blocks.append("rect")
       .attr("width", xAxis.bandwidth())
       .attr("height", yAxis.bandwidth())
-      .attr("rx", 4)
-      .attr("ry", 4)
       .style("fill", function(d) {
         return colorScale(d.value);
       })
