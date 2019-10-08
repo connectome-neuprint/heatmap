@@ -128,6 +128,7 @@ export default class HeatMap {
       .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
+      .attr("style", "max-width: 100%")
       .append("g")
       .attr("id", "margin-offset")
       .attr("transform", `translate(${margin.left},${margin.top})`);
