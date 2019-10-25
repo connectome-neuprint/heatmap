@@ -85,7 +85,7 @@ export default class HeatMap {
   }
 
   render(target) {
-    const { onClick, onMouseOver, onMouseOut } = this;
+    const { onClick, onMouseOver, onMouseOut, maxColor } = this;
     // remove any previously rendered items
     const existingSVGs = target.getElementsByTagName('svg');
     Array.from(existingSVGs).forEach(svg => {
@@ -103,7 +103,7 @@ export default class HeatMap {
 
     const colorScale = d3
       .scaleLog()
-      .range(["white", DEFAULT_MAX_COLOR])
+      .range(["white", maxColor])
       .domain([1, maxValue]);
 
     const columns = this.xLabels;
