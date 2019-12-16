@@ -85,7 +85,7 @@ export default class HeatMap {
   }
 
   render(target) {
-    const { onClick, onMouseOver, onMouseOut, maxColor } = this;
+    const { onClick, onMouseOver, onMouseOut, maxColor, xLabels } = this;
     // remove any previously rendered items
     const existingSVGs = target.getElementsByTagName('svg');
     Array.from(existingSVGs).forEach(svg => {
@@ -106,7 +106,7 @@ export default class HeatMap {
       .range(["white", maxColor])
       .domain([1, maxValue]);
 
-    const columns = this.xLabels;
+    const columns = xLabels;
     const rows = this.yLabels;
     const xAxis = d3
       .scaleBand()
@@ -194,7 +194,7 @@ export default class HeatMap {
     // TODO: combine the two text labels in a "g" element, so that they can be
     // easily centered in the rect.
 
-    if ( (width / this.xLabels.length) > 80) {
+    // if ( (width / this.xLabels.length) > 80) {
       // add the text labels
       blocks.append("text")
         .attr("x", xAxis.bandwidth() / 2)
@@ -202,7 +202,12 @@ export default class HeatMap {
         .style("text-anchor", "middle")
         .attr("pointer-events", "none")
         .attr("dy", ".35em")
-        .text(function(d) { return d.label || d.value; });
+      .text(function(d) {
+        if ((width / xLabels.length) > 80 || d.forceLabel) {
+          return d.label || d.value;
+        }
+        return null;
+      });
 
       // add the secondary text labels
       blocks.append("text")
@@ -211,8 +216,13 @@ export default class HeatMap {
         .style("text-anchor", "middle")
         .attr("pointer-events", "none")
         .attr("dy", ".35em")
-        .text(function(d) { return d.label2; });
-    }
+      .text(function(d) {
+        if ((width / xLabels.length) > 80 || d.forceLabel) {
+          return d.label2;
+        }
+        return null;
+      });
+    // }
 
 
 

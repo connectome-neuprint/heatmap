@@ -13,10 +13,10 @@ const testData = [
   {column: 'AlphaXX', row: 'AlphaXX', value: 34},
   {column: 'Beta', row: 'Beta', value: 10, label: ' ', label2: '2'},
   {column: 'Dish', row: 'Dish', value: 5000, label2: '0'},
-  {column: 'Dish', row: 'Cish', value: 18, label2: '5'},
+  {column: 'Dish', row: 'Cish', value: 18, label2: '5', forceLabel: true},
   {column: 'AlphaXX', row: 'Beta', value: 45, label2: '0'},
   {column: 'Beta', row: 'Cish', value: 21, label2: '3'},
-  {column: 'Cish', row: 'AlphaXX', value: 2, label2: '8'},
+  {column: 'Cish', row: 'AlphaXX', value: 2, label2: '8', forceLabel: true},
   {column: 'Dish', row: 'AlphaXX', value: 38, label: 'alternative', label2: '1'},
 ];
 
