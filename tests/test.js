@@ -14,13 +14,18 @@ const testData = [
   {column: 'Beta', row: 'Beta', value: 10, label: ' ', label2: '2'},
   {column: 'Dish', row: 'Dish', value: 5000, label2: '0'},
   {column: 'Dish', row: 'Cish', value: 18, label2: '5', forceLabel: true},
-  {column: 'AlphaXX', row: 'Beta', value: 45, label2: '0'},
+  {column: 'AlphaXX', row: 'Beta', value: 450, label2: '0', forceLabel: true },
   {column: 'Beta', row: 'Cish', value: 21, label2: '3'},
   {column: 'Cish', row: 'AlphaXX', value: 2, label2: '8', forceLabel: true},
   {column: 'Dish', row: 'AlphaXX', value: 38, label: 'alternative', label2: '1'},
 ];
 
-const xLabels = ["AlphaXX", "Beta", "Cish", "Dish", "Beta1", "AlphaXX1", "Beta1", "Cish1", "Dish1", "Beta2", "AlphaXX2", "Beta2", "Cish2", "Dish2", "Beta3", "AlphaXXi4", "Beta4", "Cish4", "Dish4", "Beta5", "AlphaXX5", "Beta5", "Cish5", "Dish5", "Beta6", "AlphaXX6", "Beta6", "Cish6", "Dish6", "Beta7"];
+const xLabels = ["AlphaXX", "Beta", "Cish", "Dish"]
+
+for ( let i = 0; i < 3; i+=1) {
+  ["AlphaXX", "Beta", "Cish", "Dish"].forEach(item => {xLabels.push(`${item}${i}`)});
+}
+
 const yLabels = ["AlphaXX", "Beta", "Cish", "Dish", "Beta1"].reverse();
 // grab the target div
 const target = document.getElementById('heatmap');
@@ -32,7 +37,7 @@ const target2 = document.getElementById('heatmap2');
 const yLabels2 = ['distal','proximal'];
 
 const testData2 = [
-  { column: 'distal', row: 'distal', value: 34 },
+  { column: 'distal', row: 'distal', value: "34", label2: "34" },
   { column: 'distal', row: 'proximal', value: 45 },
   { column: 'proximal', row: 'distal', value:56 },
   { column: 'proximal', row: '', value:23 },

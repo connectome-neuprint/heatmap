@@ -3,6 +3,7 @@ import * as d3 from "d3";
 const DEFAULT_MAX_COLOR = "#ff0000";
 const DEFAULT_HEIGHT = 450;
 const DEFAULT_WIDTH = 450;
+const DEFAULT_MAX_FONT_SIZE = 30; // as px
 
 export default class HeatMap {
   constructor(props = {}) {
@@ -39,23 +40,22 @@ export default class HeatMap {
       .padding(0.01);
 
     d3.select(target)
-      .append('svg')
+      .append("svg")
       .attr("id", "yHeightCheck")
       .append("g")
       .call(d3.axisLeft(tempYScale))
       .selectAll("text")
       .each(function() {
         maxWidth = Math.max(this.getBoundingClientRect().width, maxWidth);
-      })
-    d3.select("#yHeightCheck")
-      .remove();
+      });
+    d3.select("#yHeightCheck").remove();
 
     return Math.ceil(maxWidth) + 10;
   }
 
   determineXMarginHeight(target) {
     let maxWidth = 0;
-    const columns = this.xLabels
+    const columns = this.xLabels;
     const tempXScale = d3
       .scaleBand()
       .range([0, 0])
@@ -63,7 +63,7 @@ export default class HeatMap {
       .padding(0.01);
 
     d3.select(target)
-      .append('svg')
+      .append("svg")
       .attr("id", "xHeightCheck")
       .append("g")
       .call(d3.axisBottom(tempXScale))
@@ -75,19 +75,17 @@ export default class HeatMap {
       .style("text-anchor", "start")
       .each(function() {
         maxWidth = Math.max(this.getBoundingClientRect().height, maxWidth);
-      })
+      });
 
-    d3.select("#xHeightCheck")
-      .remove();
+    d3.select("#xHeightCheck").remove();
 
     return Math.ceil(maxWidth) + 10;
-
   }
 
   render(target) {
     const { onClick, onMouseOver, onMouseOut, maxColor, xLabels } = this;
     // remove any previously rendered items
-    const existingSVGs = target.getElementsByTagName('svg');
+    const existingSVGs = target.getElementsByTagName("svg");
     Array.from(existingSVGs).forEach(svg => {
       target.removeChild(svg);
     });
@@ -95,11 +93,19 @@ export default class HeatMap {
     const leftMarginWidth = this.determineYMarginWidth(target);
     const bottomMarginHeight = this.determineXMarginHeight(target);
 
-    const margin = { top: bottomMarginHeight, right: 30, bottom: 30, left: leftMarginWidth };
+    const margin = {
+      top: bottomMarginHeight,
+      right: 30,
+      bottom: 30,
+      left: leftMarginWidth
+    };
     const width = this.width - margin.left - margin.right;
     const height = this.height - margin.top - margin.bottom;
 
-    const maxValue = this.data.reduce((acc, currentValue) => Math.max(acc, currentValue.value), 0)
+    const maxValue = this.data.reduce(
+      (acc, currentValue) => Math.max(acc, currentValue.value),
+      0
+    );
 
     const colorScale = d3
       .scaleLog()
@@ -125,7 +131,12 @@ export default class HeatMap {
       .select(target)
       .append("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr(
+        "viewBox",
+        `0 0 ${width + margin.left + margin.right} ${height +
+          margin.top +
+          margin.bottom}`
+      )
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .attr("style", "max-width: 100%")
@@ -152,23 +163,27 @@ export default class HeatMap {
       .call(d3.axisLeft(yAxis));
 
     // add the data blocks to the heatmap.
-    const blocks = svg.selectAll()
+    const blocks = svg
+      .selectAll()
       .data(this.data, d => {
         return `${d.column}:${d.row}`;
       })
       .enter()
       .append("g")
-      .attr("transform", function(d) { return `translate(${xAxis(d.column)},${yAxis(d.row)})`; });
+      .attr("transform", function(d) {
+        return `translate(${xAxis(d.column)},${yAxis(d.row)})`;
+      });
 
-
-    blocks.append("rect")
+    blocks
+      .append("rect")
       .attr("width", xAxis.bandwidth())
       .attr("height", yAxis.bandwidth())
       .style("fill", function(d) {
         return colorScale(d.value);
       })
-     .on("mouseover", function handleMouseOver(event) {
-        d3.select(this).style("cursor", "pointer")
+      .on("mouseover", function handleMouseOver(event) {
+        d3.select(this)
+          .style("cursor", "pointer")
           .style("fill", "orange");
         // draw pop up with the cell information in it.
         if (onMouseOver) {
@@ -177,8 +192,9 @@ export default class HeatMap {
       })
       .on("mouseout", function handleMouseOver(event) {
         const originalColor = colorScale(d3.select(this).data()[0].value);
-        d3.select(this).style("cursor", "default")
-          .style("fill",originalColor);
+        d3.select(this)
+          .style("cursor", "default")
+          .style("fill", originalColor);
         // remove pop up with the cell information in it.
         if (onMouseOut) {
           onMouseOut(event, this);
@@ -195,36 +211,59 @@ export default class HeatMap {
     // easily centered in the rect.
 
     // if ( (width / this.xLabels.length) > 80) {
-      // add the text labels
-      blocks.append("text")
-        .attr("x", xAxis.bandwidth() / 2)
-        .attr("y", (yAxis.bandwidth() / 2) - 10)
-        .style("text-anchor", "middle")
-        .attr("pointer-events", "none")
-        .attr("dy", ".35em")
+    // add the text labels
+    const containerMax = Math.min(xAxis.bandwidth(), yAxis.bandwidth())
+
+    blocks
+      .append("text")
       .text(function(d) {
-        if ((width / xLabels.length) > 80 || d.forceLabel) {
+        if (width / xLabels.length > 80 || d.forceLabel) {
           return d.label || d.value;
         }
         return null;
+      })
+      .attr("x", xAxis.bandwidth() / 2)
+      .attr("y", function(d) {
+        if (d.label2) {
+          return (yAxis.bandwidth() / 2) - this.getBoundingClientRect().height;
+        }
+        return yAxis.bandwidth() / 2;
+      })
+      .style("text-anchor", "middle")
+      .attr("pointer-events", "none")
+      .attr("dy", ".35em")
+      .style("font-size", function() {
+        // determine which is smaller width or height
+        const fontSize = Math.min(
+            DEFAULT_MAX_FONT_SIZE,
+            (containerMax / this.getComputedTextLength()) * 4
+          );
+        return `${fontSize}px`;
       });
 
-      // add the secondary text labels
-      blocks.append("text")
-        .attr("x", xAxis.bandwidth() / 2)
-        .attr("y", (yAxis.bandwidth() / 2) + 10)
-        .style("text-anchor", "middle")
-        .attr("pointer-events", "none")
-        .attr("dy", ".35em")
+    // add the secondary text labels
+    blocks
+      .append("text")
       .text(function(d) {
-        if ((width / xLabels.length) > 80 || d.forceLabel) {
+        if (width / xLabels.length > 80 || d.forceLabel) {
           return d.label2;
         }
         return null;
+      })
+      .attr("x", xAxis.bandwidth() / 2)
+      .attr("y", function() {
+        return (yAxis.bandwidth() / 2) + this.getBoundingClientRect().height;
+      })
+      .style("text-anchor", "middle")
+      .attr("pointer-events", "none")
+      .attr("dy", ".35em")
+      .style("font-size", function() {
+        // determine which is smaller width or height
+        const fontSize = Math.min(
+            DEFAULT_MAX_FONT_SIZE,
+            (containerMax / this.getComputedTextLength()) * 4
+          );
+        return `${fontSize}px`;
       });
-    // }
-
-
-
   }
 }
