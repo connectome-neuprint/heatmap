@@ -20,13 +20,13 @@ const testData = [
   {column: 'Dish', row: 'AlphaXX', value: 38, label: 'alternative', label2: '1'},
 ];
 
-const xLabels = ["AlphaXX", "Beta", "Cish", "Dish"]
+const xLabels = [["AlphaXX", '#ff0000'], "Beta", "Cish", "Dish"]
 
 for ( let i = 0; i < 2; i+=1) {
   ["AlphaXX", "Beta", "Cish", "Dish"].forEach(item => {xLabels.push(`${item}${i}`)});
 }
 
-const yLabels = ["AlphaXX", "Beta", "Cish", "Dish", "Beta1"].reverse();
+const yLabels = [["AlphaXX","#ff0000"],[ "Beta", "#00ff00"], ["Cish", "#0000ff"], "Dish", "Beta1"].reverse();
 // grab the target div
 const target = document.getElementById('heatmap');
 // render the heatmap into the target.

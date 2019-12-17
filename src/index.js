@@ -32,7 +32,12 @@ export default class HeatMap {
 
   determineYMarginWidth(target) {
     let maxWidth = 0;
-    const rows = this.yLabels;
+    const rows = this.yLabels.map(item => {
+      if (Array.isArray(item)) {
+        return item[0];
+      }
+      return item;
+    });
     const tempYScale = d3
       .scaleBand()
       .range([0, 0])
@@ -112,15 +117,33 @@ export default class HeatMap {
       .range(["white", maxColor])
       .domain([1, maxValue]);
 
-    const columns = xLabels;
-    const rows = this.yLabels;
+    const xAxisColorLookup = {};
+
+    const columns = xLabels.map(item => {
+      if (Array.isArray(item)) {
+        const [label, color ] = item;
+        xAxisColorLookup[label] = color;
+        return label;
+      }
+      return item;
+
+    });
     const xAxis = d3
       .scaleBand()
       .range([0, width])
       .domain(columns)
       .align(0)
       .padding(0.01);
+    const yAxisColorLookup = {};
 
+    const rows = this.yLabels.map(item => {
+      if (Array.isArray(item)) {
+        const [label, color ] = item;
+        yAxisColorLookup[label] = color;
+        return label;
+      }
+      return item;
+    });
     const yAxis = d3
       .scaleBand()
       .range([height, 0])
@@ -154,13 +177,26 @@ export default class HeatMap {
       .attr("x", 9)
       .attr("dy", ".35em")
       .attr("transform", "rotate(-45)")
-      .style("text-anchor", "start");
+      .style("text-anchor", "start")
+      .style("fill", function(d) {
+        if (Object.prototype.hasOwnProperty.call(xAxisColorLookup, d)) {
+          return yAxisColorLookup[d];
+        }
+        return "#333333";
+      });
 
     // add the y axis to the heatmap
     svg
       .append("g")
       .attr("transform", `translate(-1.5, 0)`)
-      .call(d3.axisLeft(yAxis));
+      .call(d3.axisLeft(yAxis))
+      .selectAll("text")
+      .style("fill", function(d) {
+        if (Object.prototype.hasOwnProperty.call(yAxisColorLookup, d)) {
+          return yAxisColorLookup[d];
+        }
+        return "#333333";
+      });
 
     // add the data blocks to the heatmap.
     const blocks = svg
@@ -184,7 +220,7 @@ export default class HeatMap {
         // there is nothing there, which could be considered different to a 0
         // value.
         if (d.value === null) {
-          return '#cccccc';
+          return "#cccccc";
         }
         return colorScale(d.value);
       })
@@ -204,7 +240,7 @@ export default class HeatMap {
         // there is nothing there, which could be considered different to a 0
         // value.
         if (d3.select(this).data()[0].value === null) {
-          originalColor = '#cccccc';
+          originalColor = "#cccccc";
         }
         d3.select(this)
           .style("cursor", "default")
@@ -226,7 +262,7 @@ export default class HeatMap {
 
     // if ( (width / this.xLabels.length) > 80) {
     // add the text labels
-    const containerMax = Math.min(xAxis.bandwidth(), yAxis.bandwidth())
+    const containerMax = Math.min(xAxis.bandwidth(), yAxis.bandwidth());
 
     blocks
       .append("text")
@@ -239,7 +275,7 @@ export default class HeatMap {
       .attr("x", xAxis.bandwidth() / 2)
       .attr("y", function(d) {
         if (d.label2) {
-          return (yAxis.bandwidth() / 2) - this.getBoundingClientRect().height;
+          return yAxis.bandwidth() / 2 - this.getBoundingClientRect().height;
         }
         return yAxis.bandwidth() / 2;
       })
@@ -249,9 +285,9 @@ export default class HeatMap {
       .style("font-size", function() {
         // determine which is smaller width or height
         const fontSize = Math.min(
-            DEFAULT_MAX_FONT_SIZE,
-            (containerMax / this.getComputedTextLength()) * 4
-          );
+          DEFAULT_MAX_FONT_SIZE,
+          (containerMax / this.getComputedTextLength()) * 4
+        );
         return `${fontSize}px`;
       });
 
@@ -266,7 +302,7 @@ export default class HeatMap {
       })
       .attr("x", xAxis.bandwidth() / 2)
       .attr("y", function() {
-        return (yAxis.bandwidth() / 2) + this.getBoundingClientRect().height;
+        return yAxis.bandwidth() / 2 + this.getBoundingClientRect().height;
       })
       .style("text-anchor", "middle")
       .attr("pointer-events", "none")
@@ -274,9 +310,9 @@ export default class HeatMap {
       .style("font-size", function() {
         // determine which is smaller width or height
         const fontSize = Math.min(
-            DEFAULT_MAX_FONT_SIZE,
-            (containerMax / this.getComputedTextLength()) * 4
-          );
+          DEFAULT_MAX_FONT_SIZE,
+          (containerMax / this.getComputedTextLength()) * 4
+        );
         return `${fontSize}px`;
       });
   }
