@@ -179,6 +179,13 @@ export default class HeatMap {
       .attr("width", xAxis.bandwidth())
       .attr("height", yAxis.bandwidth())
       .style("fill", function(d) {
+        // null values are now treated as a special case. Rather than have them the
+        // same white color as the 0 values, they are greyed out to indicate that
+        // there is nothing there, which could be considered different to a 0
+        // value.
+        if (d.value === null) {
+          return '#cccccc';
+        }
         return colorScale(d.value);
       })
       .on("mouseover", function handleMouseOver(event) {
@@ -191,7 +198,14 @@ export default class HeatMap {
         }
       })
       .on("mouseout", function handleMouseOver(event) {
-        const originalColor = colorScale(d3.select(this).data()[0].value);
+        let originalColor = colorScale(d3.select(this).data()[0].value);
+        // null values are now treated as a special case. Rather than have them the
+        // same white color as the 0 values, they are greyed out to indicate that
+        // there is nothing there, which could be considered different to a 0
+        // value.
+        if (d3.select(this).data()[0].value === null) {
+          originalColor = '#cccccc';
+        }
         d3.select(this)
           .style("cursor", "default")
           .style("fill", originalColor);
