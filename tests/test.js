@@ -5,7 +5,8 @@ const heatmap = new SVGHeatMap({
     console.log(event, item, coordinates);
   },
   // height: 300,
-  // width: 300,
+  width: 800,
+  maxWidthOn: false
 });
 
 // set up some example data
@@ -22,7 +23,7 @@ const testData = [
 
 const xLabels = [["AlphaXX", '#ff0000'], "Beta", "Cish", "Dish"]
 
-for ( let i = 0; i < 2; i+=1) {
+for ( let i = 0; i < 7; i+=1) {
   ["AlphaXX", "Beta", "Cish", "Dish"].forEach(item => {xLabels.push(`${item}${i}`)});
 }
 

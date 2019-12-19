@@ -13,6 +13,11 @@ export default class HeatMap {
     this.onClick = props.onClick;
     this.onMouseOver = props.onMouseOver;
     this.onMouseOut = props.onMouseOut;
+    if (props.maxWidthOn === null) {
+      this.maxWidthOn = true;
+    } else {
+      this.maxWidthOn = props.maxWidthOn;
+    }
   }
 
   setData(dataArray) {
@@ -162,13 +167,18 @@ export default class HeatMap {
       )
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-      .attr("style", "max-width: 100%")
+
+    if (this.maxWidthOn) {
+      svg.attr("style", "max-width: 100%");
+    }
+
+    const imgGroup = svg
       .append("g")
       .attr("id", "margin-offset")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // add the x axis to the heatmap
-    svg
+    imgGroup
       .append("g")
       .attr("transform", `translate(-1.5,0)`)
       .call(d3.axisTop(xAxis))
@@ -186,7 +196,7 @@ export default class HeatMap {
       });
 
     // add the y axis to the heatmap
-    svg
+    imgGroup
       .append("g")
       .attr("transform", `translate(-1.5, 0)`)
       .call(d3.axisLeft(yAxis))
@@ -199,7 +209,7 @@ export default class HeatMap {
       });
 
     // add the data blocks to the heatmap.
-    const blocks = svg
+    const blocks = imgGroup
       .selectAll()
       .data(this.data, d => {
         return `${d.column}:${d.row}`;
