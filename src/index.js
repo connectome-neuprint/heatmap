@@ -18,6 +18,11 @@ export default class HeatMap {
     } else {
       this.maxWidthOn = props.maxWidthOn;
     }
+    if (props.textLabels === null) {
+      this.textLabels = true;
+    } else {
+      this. textLabels = props.textLabels;
+    }
   }
 
   setData(dataArray) {
@@ -93,7 +98,7 @@ export default class HeatMap {
   }
 
   render(target) {
-    const { onClick, onMouseOver, onMouseOut, maxColor, xLabels } = this;
+    const { onClick, onMouseOver, onMouseOut, maxColor, xLabels, textLabels } = this;
     // remove any previously rendered items
     const existingSVGs = target.getElementsByTagName("svg");
     Array.from(existingSVGs).forEach(svg => {
@@ -272,58 +277,63 @@ export default class HeatMap {
 
     // if ( (width / this.xLabels.length) > 80) {
     // add the text labels
-    const containerMax = Math.min(xAxis.bandwidth(), yAxis.bandwidth());
 
-    blocks
-      .append("text")
-      .text(function(d) {
-        if (width / xLabels.length > 80 || d.forceLabel) {
-          return d.label || d.value;
-        }
-        return null;
-      })
-      .attr("x", xAxis.bandwidth() / 2)
-      .attr("y", function(d) {
-        if (d.label2) {
-          return yAxis.bandwidth() / 2 - this.getBoundingClientRect().height;
-        }
-        return yAxis.bandwidth() / 2;
-      })
-      .style("text-anchor", "middle")
-      .attr("pointer-events", "none")
-      .attr("dy", ".35em")
-      .style("font-size", function() {
-        // determine which is smaller width or height
-        const fontSize = Math.min(
-          DEFAULT_MAX_FONT_SIZE,
-          (containerMax / this.getComputedTextLength()) * 4
-        );
-        return `${fontSize}px`;
-      });
+    // TODO: need to calculate the width and height of each square before looping over each one.
 
-    // add the secondary text labels
-    blocks
-      .append("text")
-      .text(function(d) {
-        if (width / xLabels.length > 80 || d.forceLabel) {
-          return d.label2;
-        }
-        return null;
-      })
-      .attr("x", xAxis.bandwidth() / 2)
-      .attr("y", function() {
-        return yAxis.bandwidth() / 2 + this.getBoundingClientRect().height;
-      })
-      .style("text-anchor", "middle")
-      .attr("pointer-events", "none")
-      .attr("dy", ".35em")
-      .style("font-size", function() {
-        // determine which is smaller width or height
-        const fontSize = Math.min(
-          DEFAULT_MAX_FONT_SIZE,
-          (containerMax / this.getComputedTextLength()) * 4
-        );
-        return `${fontSize}px`;
-      });
+    if (textLabels) {
+      const containerMax = Math.min(xAxis.bandwidth(), yAxis.bandwidth());
+
+      blocks
+        .append("text")
+        .text(function(d) {
+          if (width / xLabels.length > 80 || d.forceLabel) {
+            return d.label || d.value;
+          }
+          return null;
+        })
+        .attr("x", xAxis.bandwidth() / 2)
+        .attr("y", function(d) {
+          if (d.label2) {
+            return yAxis.bandwidth() / 2 - this.getBoundingClientRect().height;
+          }
+          return yAxis.bandwidth() / 2;
+        })
+        .style("text-anchor", "middle")
+        .attr("pointer-events", "none")
+        .attr("dy", ".35em")
+        .style("font-size", function() {
+          // determine which is smaller width or height
+          const fontSize = Math.min(
+            DEFAULT_MAX_FONT_SIZE,
+            (containerMax / this.getComputedTextLength()) * 4
+          );
+          return `${fontSize}px`;
+        });
+
+      // add the secondary text labels
+      blocks
+        .append("text")
+        .text(function(d) {
+          if (width / xLabels.length > 80 || d.forceLabel) {
+            return d.label2;
+          }
+          return null;
+        })
+        .attr("x", xAxis.bandwidth() / 2)
+        .attr("y", function() {
+          return yAxis.bandwidth() / 2 + this.getBoundingClientRect().height;
+        })
+        .style("text-anchor", "middle")
+        .attr("pointer-events", "none")
+        .attr("dy", ".35em")
+        .style("font-size", function() {
+          // determine which is smaller width or height
+          const fontSize = Math.min(
+            DEFAULT_MAX_FONT_SIZE,
+            (containerMax / this.getComputedTextLength()) * 4
+          );
+          return `${fontSize}px`;
+        });
+    }
   }
 }
