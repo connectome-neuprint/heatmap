@@ -20,7 +20,7 @@
   "author": "Jody Clements",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
+    "@babel/cli": "^7.12.10",
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
     "eslint": "^6.4.0",
@@ -31,7 +31,7 @@
     "prettier": "^1.18.2",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.1"
   },
   "dependencies": {
     "d3": "^5.12.0"
